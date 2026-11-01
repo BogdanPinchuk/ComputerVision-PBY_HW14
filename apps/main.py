@@ -60,7 +60,7 @@ class TqdmProgressCallback(keras.callbacks.Callback):
         logs = logs or {}
         loss = float(logs.get('loss', 0.0))
         acc = float(logs.get('accuracy', 0.0))
-        status = float(epoch + 1.0 / self.total_epochs)
+        status = float((epoch + 1.0) / self.total_epochs)
         self.pbar.write(f"Epoch: {epoch + 1}, Loss: {loss:.4f}, Accuracy: {acc:.4f}, Status: {status:.2%}")
         self.pbar.update(1)
 
