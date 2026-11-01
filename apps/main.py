@@ -26,7 +26,7 @@ def load_image(file_name: str) -> np.ndarray:
     return img_rgb
 
 
-def contrast(val1: np.number, val2: np.number) -> float:
+def contrast(val1: np.number, val2: np.number) -> float | int | np.number:
     """
     Contrast between 2 values
     :param val1: first value

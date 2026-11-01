@@ -3,3 +3,5 @@
 /.idea/dbnavigator.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+/resources/data/datasets/
+/resources/data/keras.json
