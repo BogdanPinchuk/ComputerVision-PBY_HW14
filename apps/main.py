@@ -26,11 +26,12 @@ def load_image(file_name: str) -> np.ndarray:
     return img_rgb
 
 
-def contrast(val1: np.number, val2: np.number) -> float | int | np.number:
+def contrast(val1: float | int | np.number, val2: float | int | np.number) -> float:
     """
     Contrast between 2 values
     :param val1: first value
     :param val2: second value
     :return: result between 0 and 1
     """
-    return abs(val1 - val2) / abs(val1 + val2) if (val1 + val2) != 0 else 0
+    denom = abs(val1 + val2)
+    return float(abs(val1 - val2) / denom) if denom != 0 else 0.0
