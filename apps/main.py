@@ -81,7 +81,7 @@ class TqdmProgressCallback(keras.callbacks.Callback):
             self.pbar.close()
 
 
-def calc_class_metrics(y_test, y_pred, y_prob=None, caption: str = "Metrics", is_print=True, charts=True,
+def calc_class_metrics(y_test, y_pred, y_prob=None, caption: str = "Metrics", is_print=True, is_charts=True,
                        figsize: tuple[float, float] = (10, 4)) -> Styler:
     """
     Calc and print a classifier metrics
@@ -89,7 +89,8 @@ def calc_class_metrics(y_test, y_pred, y_prob=None, caption: str = "Metrics", is
     :param y_pred: predicted set
     :param y_prob: probabilities set
     :param caption: caption
-    :param charts: show charts
+    :param is_print: is print report
+    :param is_charts: show charts
     :param figsize: figure size
     :return: DataFrame styler
     """
@@ -133,7 +134,7 @@ def calc_class_metrics(y_test, y_pred, y_prob=None, caption: str = "Metrics", is
         print(classification_report(y_test, y_pred))
 
     # Graphic results
-    if y_prob is not None and not is_multiclass and charts:
+    if y_prob is not None and not is_multiclass and is_charts:
         fpr, tpr, _ = roc_curve(y_test, y_prob)
         prec, rec, _ = precision_recall_curve(y_test, y_prob)
 
