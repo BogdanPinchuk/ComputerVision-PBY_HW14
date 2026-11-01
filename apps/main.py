@@ -34,4 +34,4 @@ def contrast(val1: float | int | np.number, val2: float | int | np.number) -> fl
     :return: result between 0 and 1
     """
     denom = abs(val1 + val2)
-    return float(abs(val1 - val2) / denom) if denom != 0 else 0.0
+    return float(abs(val1 - val2) / denom) if denom != 0.0 else 0.0
