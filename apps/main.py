@@ -81,12 +81,14 @@ class TqdmProgressCallback(keras.callbacks.Callback):
             self.pbar.close()
 
 
-def calc_class_metrics(y_test, y_pred, y_prob=None, charts=True, figsize: tuple[float, float] = (10, 4)) -> Styler:
+def calc_class_metrics(y_test, y_pred, y_prob=None, caption: str = "Metrics", is_print=True, charts=True,
+                       figsize: tuple[float, float] = (10, 4)) -> Styler:
     """
     Calc and print a classifier metrics
     :param y_test: original target test set
     :param y_pred: predicted set
     :param y_prob: probabilities set
+    :param caption: caption
     :param charts: show charts
     :param figsize: figure size
     :return: DataFrame styler
@@ -94,23 +96,28 @@ def calc_class_metrics(y_test, y_pred, y_prob=None, charts=True, figsize: tuple[
     rp = rpt.Reporter()
     rp.tolerance = 4
 
+    n_classes = len(np.unique(y_test))
+    is_multiclass = n_classes > 2
+    avg_mode = 'weighted' if is_multiclass else 'binary'
+
     # Confusion Matrix
-    cm = confusion_matrix(y_test, y_pred)
-    rp.add_item("Confusion Matrix", rp.format_matrix(cm))
+    if not is_multiclass:
+        cm = confusion_matrix(y_test, y_pred)
+        rp.add_item("Confusion Matrix", rp.format_matrix(cm))
     # Accuracy
     accuracy = accuracy_score(y_test, y_pred)
     rp.add_item("Accuracy\n(Точність)", rp.format_value(accuracy))
     # Precision
-    precision = precision_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average=avg_mode)
     rp.add_item("Precision\n(Влучність)", rp.format_value(precision))
     # Recall
-    recall = recall_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred, average=avg_mode)
     rp.add_item("Recall\n(Повнота)", rp.format_value(recall))
     # F1-score
-    f1 = f1_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred, average=avg_mode)
     rp.add_item("F1-score", rp.format_value(f1))
 
-    if y_prob is not None:
+    if y_prob is not None and not is_multiclass:
         # ROC-AUC
         auc = roc_auc_score(y_test, y_prob)
         rp.add_item("Receiver Operating Characteristic\n(ROC-AUC)", rp.format_value(auc))
@@ -121,11 +128,12 @@ def calc_class_metrics(y_test, y_pred, y_prob=None, charts=True, figsize: tuple[
     df = rp.get_pd_report()
 
     # Print results
-    rp.print_pd_report(f"Metrics")
-    print(classification_report(y_test, y_pred))
+    if is_print:
+        rp.print_pd_report(caption)
+        print(classification_report(y_test, y_pred))
 
     # Graphic results
-    if y_prob is not None and charts:
+    if y_prob is not None and not is_multiclass and charts:
         fpr, tpr, _ = roc_curve(y_test, y_prob)
         prec, rec, _ = precision_recall_curve(y_test, y_prob)
 
